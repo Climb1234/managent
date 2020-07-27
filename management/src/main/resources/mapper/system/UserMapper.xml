@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.system.mapper.UserMapper">
+    <resultMap id="userEntity" type="com.example.demo.system.entity.User">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="role_id" jdbcType="BIGINT" property="roleId" />
+        <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+        <result column="create_time"  jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+
+    <resultMap id="userDto" type="com.example.demo.system.dto.UserDto" extends="com.example.demo.system.mapper.UserMapper.userEntity">
+        <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+        <result column="description" jdbcType="VARCHAR" property="roleDescription" />
+    </resultMap>
+
+    <select id="getById" resultMap="userEntity">
+        select * from sys_user where id = #{id}
+    </select>
+
+    <insert id="insert">
+        insert into sys_user(username, password, role_id, avatar, create_time)
+            values(#{username}, #{password}, #{roleId}, #{avatar}, #{createTime})
+    </insert>
+
+    <update id="updateUser" >
+        update sys_user set
+            username = #{username},
+            password = #{password},
+            role_id = #{roleId},
+            avatar = #{avatar}
+        where id = #{id}
+    </update>
+    <delete id="deleteUser">
+        delete from sys_user where id = #{id}
+    </delete>
+
+
+    <select id="getUserAndRoleList" resultMap="userDto">
+        select u.*, r.role_name as role_name, r.description
+        from sys_user u
+        left join sys_role r on u.role_id = r.id
+        <where>
+            <if test="params.username != null and params.username != ''">
+                and u.username like concat('%', #{params.username}, '%')
+            </if>
+        </where>
+        order by u.id
+    </select>
+
+    <select id="getUserAndRole" resultMap="userDto">
+        select u.*, r.role_name as role_name, r.description
+        from sys_user u
+        left join sys_role r on u.role_id = r.id
+        where u.id = #{id}
+    </select>
+
+    <select id="getByUsername" resultMap="userEntity">
+        select * from sys_user where username = #{username}
+    </select>
+
+    <select id="countUser" resultType="int">
+        select count(*) from sys_user
+        <where>
+            <if test="null != params.id">
+                and id = #{params.id}
+            </if>
+            <if test="null != params.username and params.username != ''">
+                and username = #{params.username}
+            </if>
+            <if test="null != params.excludeId">
+                and id &lt;&gt; #{params.excludeId}
+            </if>
+        </where>
+    </select>
+</mapper>

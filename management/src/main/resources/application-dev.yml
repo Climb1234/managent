@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/schema?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    druid:
+      initial-size: 10
+      min-idle: 10
+      max-active: 20
+
+  flyway:
+    enabled: true
+    schemas: schema
+    table: db_version
+    baseline-on-migrate: true
+    validate-on-migrate: false
+    placeholder-replacement: false
+
+app:
+  uploadDir: C:\Users\Climb\Desktop\image

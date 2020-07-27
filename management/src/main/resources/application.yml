@@ -1,0 +1,19 @@
+spring:
+  profiles:
+    active: prod
+
+server:
+  tomcat:
+    max-threads: 1000
+    min-spare-threads: 30
+  servlet:
+    context-path: /api
+  port: 8888
+
+mybatis:
+  mapper-locations: classpath:/mapper/**/*.xml
+
+logging:
+  level:
+    com.example.demo: debug
+
